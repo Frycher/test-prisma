@@ -1,5 +1,6 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
+import { useState } from 'react';
 import prisma from '../lib/prisma';
 
 import styles from '../styles/Home.module.css';
@@ -18,6 +19,17 @@ const Home: NextPage = (props: any) => {
 		}
 		return await respone.json();
 	};
+	const onSubmitPost = (e: any): void => {
+		e.preventDefault();
+	};
+	interface test {
+		title: string | undefined;
+		descr: string | undefined;
+	}
+	const [state, setState] = useState<test>({
+		title: '',
+		descr: '',
+	});
 
 	return (
 		<div className={styles.container}>
@@ -27,9 +39,10 @@ const Home: NextPage = (props: any) => {
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 			hello
-			<form>
-				<input type="text" placeholder="title" />
-				<input type="text" placeholder="descripton" />
+			{JSON.stringify(state)}
+			<form onSubmit={onSubmitPost}>
+				<input type="text" name="title" value={state.title} onChange={(e) => setState({ title: e.target.value })} placeholder="title" />
+				<input type="text" name="descr" value={state.descr} onChange={(e) => setState({ descr: e.target.value })} placeholder="descripton" />
 				<button> submit</button>
 			</form>
 			<div style={{ borderTop: '5px solid #000', width: '100%', margin: 5 }}></div>

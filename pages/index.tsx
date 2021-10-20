@@ -1,5 +1,5 @@
 import { ChangeEvent, FormEvent, useCallback, useState } from 'react';
-import type { GetServerSideProps, GetServerSidePropsResult, NextPage } from 'next';
+import type { GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult, NextPage } from 'next';
 import Head from 'next/head';
 import prisma from '../lib/prisma';
 import { Post } from '@prisma/client';
@@ -43,7 +43,7 @@ const Home: NextPage<IHomeProps> = (props) => {
 		try {
 			const post: Post = await createPost(state);
 
-			setStatePosts((prev) => [...prev, post]);
+			setStatePosts((prev) => [post, ...prev]);
 			setState({
 				title: '',
 				description: '',
@@ -131,7 +131,7 @@ const Home: NextPage<IHomeProps> = (props) => {
 
 export default Home;
 
-export async function getServerSideProps(context: GetServerSideProps): Promise<GetServerSidePropsResult<IHomeProps>> {
+export async function getServerSideProps(context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<IHomeProps>> {
 	const session = await getSession(context);
 	const posts = await prisma.post.findMany();
 	console.log(session);

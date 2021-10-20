@@ -21,6 +21,7 @@ const Home: NextPage<IHomeProps> = (props) => {
 	const [statePosts, setStatePosts] = useState(posts);
 	// console.log('props,', props);
 
+
 	const createPost = async (post: ICreatePost): Promise<Post> => {
 		console.log('post', post);
 
@@ -49,8 +50,8 @@ const Home: NextPage<IHomeProps> = (props) => {
 				description: '',
 			});
 		} catch (error: any) {
-			setError(error.response);
-			console.log(error?.response?.data);
+			setError(error.response?.message);
+			console.log(error.response);
 		}
 	};
 
@@ -133,8 +134,12 @@ export default Home;
 
 export async function getServerSideProps(context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<IHomeProps>> {
 	const session = await getSession(context);
-	const posts = await prisma.post.findMany();
-	console.log(session);
+	const posts = await prisma.post.findMany({
+		orderBy: {
+			created_at: 'desc',
+		},
+	});
+	console.log('session:', session);
 
 	// if (!session) {
 	// 	return {

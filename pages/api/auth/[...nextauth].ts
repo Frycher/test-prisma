@@ -1,5 +1,5 @@
-import NextAuth from 'next-auth';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
+import NextAuth from 'next-auth';
 import Providers from 'next-auth/providers';
 import prisma from '../../../lib/prisma';
 
@@ -14,4 +14,8 @@ export default NextAuth({
 		// Providers.Credentials({})
 	],
 	adapter: PrismaAdapter(prisma),
+	// pages: {
+	// 	error: '/signin',
+	// },
+	// debug: true,
 });

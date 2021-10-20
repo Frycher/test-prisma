@@ -3,8 +3,6 @@ import NextAuth from 'next-auth';
 import Providers from 'next-auth/providers';
 import prisma from '../../../lib/prisma';
 
-// console.log(process.env);
-
 export default NextAuth({
 	providers: [
 		Providers.Google({
@@ -13,6 +11,9 @@ export default NextAuth({
 		}),
 		// Providers.Credentials({})
 	],
+	session: {
+		maxAge: undefined,
+	},
 	adapter: PrismaAdapter(prisma),
 	// pages: {
 	// 	error: '/signin',

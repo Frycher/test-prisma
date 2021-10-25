@@ -3,7 +3,9 @@ import type { GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsR
 import Head from 'next/head';
 import prisma from '../lib/prisma';
 import { Post } from '@prisma/client';
-import { getSession, signIn, signOut } from 'next-auth/client';
+import { getSession, signIn, signOut, getProviders, useSession } from 'next-auth/react';
+import type { Session } from 'next-auth';
+import Image from 'next/image';
 
 import styles from '../styles/Home.module.css';
 
@@ -13,14 +15,27 @@ export interface ICreatePost {
 }
 interface IHomeProps {
 	posts: Post[];
-	// session:
+	session: Session | null;
 }
+
+console.log('process.env: ', process.env.GOOGLE_CLIENT_ID);
+console.log('process.env: ', process.env.GOOGLE_CLIENT_SECRET);
+
 const Home: NextPage<IHomeProps> = (props) => {
 	const { posts, session } = props;
 
-	const [statePosts, setStatePosts] = useState(posts);
-	// console.log('props,', props);
+	console.log(
+		'providers',
+		getProviders().then((res) => console.log(res))
+	);
 
+	const [statePosts, setStatePosts] = useState(posts);
+	// const [session, loading] = useSession();
+	const { data: sessionHook } = useSession();
+	console.log('session state', sessionHook);
+	console.log('session SSR2', session);
+
+	// console.log('props,', props);
 
 	const createPost = async (post: ICreatePost): Promise<Post> => {
 		console.log('post', post);
@@ -102,8 +117,21 @@ const Home: NextPage<IHomeProps> = (props) => {
 					<input type="password" placeholder="password" />
 					<button>login</button>
 				</form> */}
-				<button onClick={() => signIn()}>sign in</button>
+				{sessionHook ? <button onClick={() => signOut()}>log out</button> : <button onClick={() => signIn()}>sign in</button>}
 			</div>
+			<div>
+				USER: <br />
+				{sessionHook?.user && (
+					<>
+						{sessionHook.user.email}
+						<div style={{ height: 50, width: 50 }}>
+							<Image src={sessionHook.user.image} objectFit="contain" height={50} width={50} />
+						</div>
+						{sessionHook.user.name}
+					</>
+				)}
+			</div>
+
 			<div style={{ borderTop: '5px solid #000', width: '100%', marginBottom: 30, marginTop: 30 }}></div>
 			{JSON.stringify(state)}
 			<br />
@@ -139,19 +167,12 @@ export async function getServerSideProps(context: GetServerSidePropsContext): Pr
 			created_at: 'desc',
 		},
 	});
-	console.log('session:', session);
-
-	// if (!session) {
-	// 	return {
-	// 		props: {
-	// 			session: null,
-	// 		},
-	// 	};
-	// }
+	console.log('session SSR:', session);
 
 	return {
 		props: {
 			posts: JSON.parse(JSON.stringify(posts)),
+			session: session,
 		},
 	};
 }

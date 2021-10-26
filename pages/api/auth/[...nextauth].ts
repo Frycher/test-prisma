@@ -11,4 +11,8 @@ export default NextAuth({
 		}),
 	],
 	// adapter: PrismaAdapter(prisma),
+	theme: {
+		logo: '/vercel.svg',
+		colorScheme: 'light',
+	},
 });

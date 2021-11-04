@@ -34,7 +34,8 @@ const Home: NextPage<IHomeProps> = (props) => {
 	}, []);
 
 	useEffect(() => {
-		axios.get('https://api.openweathermap.org/data/2.5/weather?q=Kharkov&appid=125bcdd2ff35d8fcb552fe347d574ba9');
+		axios.get('https://api.openweathermap.org/data/2.5/weather?q=Frankfurt am Main&appid=125bcdd2ff35d8fcb552fe347d574ba9&units=metric');
+		// axios.get('https://pro.openweathermap.org/data/2.5/forecast/hourly?q=London,us&appid=125bcdd2ff35d8fcb552fe347d574ba9');
 	}, []);
 
 	const [statePosts, setStatePosts] = useState(posts);
